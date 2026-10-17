@@ -15,7 +15,7 @@ Mobile-first product catalog with a React/Vite storefront, Express/MongoDB API, 
 4. Start both apps: `npm run dev`.
 5. Open `http://localhost:5173`. API runs on `http://localhost:5000`.
 
-Frontend and backend can also run independently with `npm run dev --prefix frontend` and `npm run dev --prefix backend`. Production frontend API origin can be set with `VITE_API_URL`; set `FRONTEND_URL` to the deployed frontend origin.
+Frontend and backend can also run independently with `npm run dev --prefix frontend` and `npm run dev --prefix backend`. For a split deployment, set the frontend build variable `VITE_API_URL` to the backend's public origin (for example, `https://api.example.com`) and set backend `FRONTEND_URL` to the frontend's public origin. The same backend origin is used to resolve stored relative image paths.
 
 ## Manual workflow checklist
 
@@ -25,4 +25,4 @@ Frontend and backend can also run independently with `npm run dev --prefix front
 - Open admin endpoints while signed out and confirm writes return HTTP 401.
 - Check the storefront at 320px, 360px, 390px, and desktop widths.
 
-Product images are stored in `backend/uploads/products`; preserve that directory when deploying if uploads should survive restarts. MongoDB stores product fields and relative image URLs. Admin authentication uses expiring signed JWTs held in session storage and passwords are bcrypt hashed.
+Product images are stored in `backend/uploads/products` by default, independent of the server's startup directory. MongoDB stores relative image URLs. On hosts with ephemeral filesystems, attach persistent storage and set backend `UPLOAD_DIR` to its mounted directory; otherwise uploaded files can disappear on redeploy and their image URLs will return 404. Copy existing uploads to the persistent directory when migrating. Admin authentication uses expiring signed JWTs held in session storage and passwords are bcrypt hashed.
